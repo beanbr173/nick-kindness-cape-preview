@@ -24,6 +24,93 @@
       overflow-x: hidden;
     }
 
+    body.lang-pending .app-header,
+    body.lang-pending .book-shell,
+    body.lang-pending .nav-bar { visibility: hidden; pointer-events: none; }
+
+    .lang-gate {
+      position: fixed;
+      inset: 0;
+      z-index: 500;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      background: linear-gradient(160deg, #1a1a2e 0%, #16213e 40%, #0f3460 100%);
+    }
+
+    .lang-gate.hidden { display: none; }
+
+    .lang-card {
+      width: min(420px, 94vw);
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 20px;
+      padding: 2rem 1.75rem;
+      text-align: center;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 24px 60px rgba(0,0,0,0.35);
+    }
+
+    .lang-card .cover-mini {
+      width: 56%;
+      border-radius: 10px;
+      margin-bottom: 1.25rem;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    }
+
+    .lang-card h2 {
+      font-family: "Fredoka", sans-serif;
+      font-size: clamp(1.4rem, 4vw, 1.75rem);
+      margin-bottom: 0.35rem;
+    }
+
+    .lang-card .lang-prompt {
+      font-size: 0.95rem;
+      opacity: 0.8;
+      margin-bottom: 1.5rem;
+    }
+
+    .lang-card .lang-prompt-es {
+      font-size: 0.9rem;
+      opacity: 0.65;
+      margin-bottom: 1.5rem;
+      margin-top: -1rem;
+    }
+
+    .lang-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .lang-buttons button {
+      font-family: "Fredoka", sans-serif;
+      font-size: 1.05rem;
+      padding: 0.85rem 1.25rem;
+      border: none;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+
+    .lang-buttons button:active { transform: scale(0.97); }
+
+    .btn-lang-en {
+      background: var(--cape);
+      color: var(--ink);
+      font-weight: 600;
+    }
+
+    .btn-lang-es {
+      background: rgba(255,255,255,0.15);
+      color: #fff;
+      border: 2px solid rgba(255,255,255,0.25) !important;
+      font-weight: 600;
+    }
+
+    .btn-lang-es:hover { background: rgba(255,255,255,0.22); }
+
     .app-header {
       text-align: center;
       padding: 1.25rem 1rem 0.5rem;
@@ -41,6 +128,23 @@
       opacity: 0.7;
       margin-top: 0.25rem;
     }
+
+    .header-actions {
+      margin-top: 0.6rem;
+    }
+
+    .btn-change-lang {
+      font-family: "Fredoka", sans-serif;
+      font-size: 0.78rem;
+      padding: 0.35rem 0.85rem;
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 999px;
+      background: rgba(255,255,255,0.1);
+      color: #fff;
+      cursor: pointer;
+    }
+
+    .btn-change-lang:hover { background: rgba(255,255,255,0.18); }
 
     .book-shell {
       display: flex;
@@ -319,186 +423,172 @@
     }
   </style>
 </head>
-<body>
+<body class="lang-pending">
+
+<div class="lang-gate" id="langGate">
+  <div class="lang-card">
+    <img class="cover-mini" src="assets/cover-nick.png?v=2" alt="">
+    <h2>Nick and the Kindness Cape</h2>
+    <p class="lang-prompt">Choose your language</p>
+    <p class="lang-prompt-es">Elige tu idioma</p>
+    <div class="lang-buttons">
+      <button class="btn-lang-en" id="btnLangEn">English</button>
+      <button class="btn-lang-es" id="btnLangEs">Español</button>
+    </div>
+  </div>
+</div>
 
 <header class="app-header">
-  <h1>📖 Book Preview</h1>
-  <p>Nick and the Kindness Cape · 17 pages · Ages 4–8</p>
+  <h1 id="headerTitle">📖 Book Preview</h1>
+  <p id="headerSubtitle">Nick and the Kindness Cape · 17 pages · Ages 4–8</p>
+  <div class="header-actions">
+    <button class="btn-change-lang" id="btnChangeLang" type="button">🌐 Language</button>
+  </div>
 </header>
 
 <main class="book-shell">
   <div class="page-counter" id="pageCounter">Page 1 of 17</div>
 
   <article class="book-page active" data-page="1" data-thumb="assets/cover-nick.png?v=2">
-    <img class="page-bg" src="assets/cover-nick.png?v=2" alt="Nick flying over Bright Hollow in his golden kindness cape">
+    <img class="page-bg" src="assets/cover-nick.png?v=2" alt="">
     <div class="page-overlay top">
       <div class="page-text title-block">
-        <h2>Nick and the<br>Kindness Cape</h2>
-        <p class="subtitle">A Superhero Story About Heart</p>
-        <p class="byline">Preview Edition</p>
+        <h2 data-i18n="p1_title">Nick and the<br>Kindness Cape</h2>
+        <p class="subtitle" data-i18n="p1_subtitle">A Superhero Story About Heart</p>
+        <p class="byline" data-i18n="p1_byline">Preview Edition</p>
       </div>
     </div>
     <span class="page-number">1</span>
   </article>
 
   <article class="book-page" data-page="2" data-thumb="assets/page-02-bright-hollow.png?v=2">
-    <img class="page-bg" src="assets/page-02-bright-hollow.png?v=2" alt="Nick riding his bike through Bright Hollow">
+    <img class="page-bg" src="assets/page-02-bright-hollow.png?v=2" alt="">
     <div class="page-overlay bottom">
-      <div class="page-text">
-        <p>In the sunny town of <span class="emphasis">Bright Hollow</span>, lived an ordinary boy named Nick. He rode his red bike, fed the pigeons, and dreamed of doing something <span class="emphasis">extraordinary</span>.</p>
-      </div>
+      <div class="page-text"><p data-i18n="p2"></p></div>
     </div>
     <span class="page-number">2</span>
   </article>
 
   <article class="book-page" data-page="3" data-thumb="assets/page-03-attic-cape.png?v=2">
-    <img class="page-bg" src="assets/page-03-attic-cape.png?v=2" alt="Nick discovers a glowing golden cape in the attic">
+    <img class="page-bg" src="assets/page-03-attic-cape.png?v=2" alt="">
     <div class="page-overlay bottom">
-      <div class="page-text">
-        <p>One rainy afternoon, Nick explored the dusty attic. Behind an old trunk, something <span class="emphasis">glimmered</span>—a golden cape with a star that seemed to wink at him.</p>
-      </div>
+      <div class="page-text"><p data-i18n="p3"></p></div>
     </div>
     <span class="page-number">3</span>
   </article>
 
   <article class="book-page" data-page="4" data-thumb="assets/page-04-whoosh-flying.png?v=2">
-    <img class="page-bg" src="assets/page-04-whoosh-flying.png?v=2" alt="Nick lifts off wearing the glowing cape">
+    <img class="page-bg" src="assets/page-04-whoosh-flying.png?v=2" alt="">
     <div class="page-overlay bottom">
-      <div class="page-text">
-        <p>Nick tied the cape around his shoulders. The star glowed warm and bright. The floor dropped away and—<span class="emphasis">WHOOSH!</span>—he lifted off like a balloon set free.</p>
-      </div>
+      <div class="page-text"><p data-i18n="p4"></p></div>
     </div>
     <span class="page-number">4</span>
   </article>
 
   <article class="book-page" data-page="5" data-thumb="assets/page-05-tree-bonk.png?v=2">
-    <img class="page-bg" src="assets/page-05-tree-bonk.png?v=2" alt="Nick bonks into an oak tree while learning to fly">
+    <img class="page-bg" src="assets/page-05-tree-bonk.png?v=2" alt="">
     <div class="page-overlay bottom">
-      <div class="page-text">
-        <p>"I'm flying!" Nick cheered—until he bonked into an oak tree. Leaves rained down. A squirrel shook its fist. Being a superhero, Nick learned, takes <span class="emphasis">practice</span>.</p>
-      </div>
+      <div class="page-text"><p data-i18n="p5"></p></div>
     </div>
     <span class="page-number">5</span>
   </article>
 
   <article class="book-page" data-page="6" data-thumb="assets/page-06-captain-compass.png?v=2">
-    <img class="page-bg" src="assets/page-06-captain-compass.png?v=2" alt="Captain Compass speaks with Nick in the park">
+    <img class="page-bg" src="assets/page-06-captain-compass.png?v=2" alt="">
     <div class="page-overlay bottom">
-      <div class="page-text">
-        <p>A kind old hero appeared—<span class="emphasis">Captain Compass</span>, retired but wise. "Every great hero stumbles," he smiled. "The cape chose you because of what's in your heart, not your height."</p>
-      </div>
+      <div class="page-text"><p data-i18n="p6"></p></div>
     </div>
     <span class="page-number">6</span>
   </article>
 
   <article class="book-page" data-page="7" data-thumb="assets/page-07-training.png?v=2">
-    <img class="page-bg" src="assets/page-07-training.png?v=2" alt="Nick trains with Captain Compass">
+    <img class="page-bg" src="assets/page-07-training.png?v=2" alt="">
     <div class="page-overlay bottom">
-      <div class="page-text">
-        <p>Captain Compass taught Nick to hover, swoop, and land softly. "Real power," he said, "isn't about being the strongest. It's about being the <span class="emphasis">bravest helper</span> you can be."</p>
-      </div>
+      <div class="page-text"><p data-i18n="p7"></p></div>
     </div>
     <span class="page-number">7</span>
   </article>
 
   <article class="book-page" data-page="8" data-thumb="assets/page-08-hero-beacon.png?v=2">
-    <img class="page-bg" src="assets/page-08-hero-beacon.png?v=2" alt="The Hero Beacon blazes over Bright Hollow">
+    <img class="page-bg" src="assets/page-08-hero-beacon.png?v=2" alt="">
     <div class="page-overlay bottom">
-      <div class="page-text">
-        <p>That evening, the Hero Beacon blazed red over Bright Hollow. <span class="emphasis">Someone needs help!</span> Nick's cape fluttered. This was his moment. His very first real mission.</p>
-      </div>
+      <div class="page-text"><p data-i18n="p8"></p></div>
     </div>
     <span class="page-number">8</span>
   </article>
 
   <article class="book-page" data-page="9" data-thumb="assets/page-09-maple-park.png?v=2">
-    <img class="page-bg" src="assets/page-09-maple-park.png?v=2" alt="Mrs. Patel points to Whiskers stuck in a tree">
+    <img class="page-bg" src="assets/page-09-maple-park.png?v=2" alt="">
     <div class="page-overlay bottom">
-      <div class="page-text">
-        <p>At Maple Park, Mrs. Patel pointed up at a tree. "My kitten, Whiskers, is stuck!" Whiskers mewed sadly from the highest branch. Nick rolled up his sleeves—or rather, his cape.</p>
-      </div>
+      <div class="page-text"><p data-i18n="p9"></p></div>
     </div>
     <span class="page-number">9</span>
   </article>
 
   <article class="book-page" data-page="10" data-thumb="assets/page-kitten-rescue.png?v=2">
-    <img class="page-bg" src="assets/page-kitten-rescue.png?v=2" alt="Nick tries to reach Whiskers in the tree">
+    <img class="page-bg" src="assets/page-kitten-rescue.png?v=2" alt="">
     <div class="page-overlay bottom">
-      <div class="page-text">
-        <p>Nick flew up and tried to <span class="emphasis">grab</span> the kitten. Whiskers scrambled higher. Nick tried a super-loud shout. Whiskers hid behind a leaf. Nothing worked!</p>
-      </div>
+      <div class="page-text"><p data-i18n="p10"></p></div>
     </div>
     <span class="page-number">10</span>
   </article>
 
   <article class="book-page" data-page="11" data-thumb="assets/page-11-gentle-kitten.png?v=2">
-    <img class="page-bg" src="assets/page-11-gentle-kitten.png?v=2" alt="Nick speaks gently to Whiskers">
+    <img class="page-bg" src="assets/page-11-gentle-kitten.png?v=2" alt="">
     <div class="page-overlay bottom">
-      <div class="page-text">
-        <p>Nick took a deep breath. He spoke softly: "It's okay, little one. I'm here to help, not hurry you." He held out his hand and waited, patient as sunshine.</p>
-      </div>
+      <div class="page-text"><p data-i18n="p11"></p></div>
     </div>
     <span class="page-number">11</span>
   </article>
 
   <article class="book-page" data-page="12" data-thumb="assets/page-12-kitten-saved.png?v=2">
-    <img class="page-bg" src="assets/page-12-kitten-saved.png?v=2" alt="Nick holds Whiskers safely while Mrs. Patel cheers">
+    <img class="page-bg" src="assets/page-12-kitten-saved.png?v=2" alt="">
     <div class="page-overlay bottom">
-      <div class="page-text">
-        <p>Whiskers sniffed, stepped forward, and curled into Nick's arms. Mrs. Patel cheered. Nick had saved the day—not with force, but with <span class="emphasis">gentleness</span>. His star glowed brighter than ever.</p>
-      </div>
+      <div class="page-text"><p data-i18n="p12"></p></div>
     </div>
     <span class="page-number">12</span>
   </article>
 
   <article class="book-page" data-page="13" data-thumb="assets/page-13-grumpy-grumble.png?v=2">
-    <img class="page-bg" src="assets/page-13-grumpy-grumble.png?v=2" alt="Grumpy Grumble at the playground">
+    <img class="page-bg" src="assets/page-13-grumpy-grumble.png?v=2" alt="">
     <div class="page-overlay bottom">
-      <div class="page-text">
-        <p>But across town, a shadow grumbled. <span class="emphasis">Grumpy Grumble</span> fed on frowns and fussing. "Joy belongs to ME!" he bellowed, stealing smiles from the playground.</p>
-      </div>
+      <div class="page-text"><p data-i18n="p13"></p></div>
     </div>
     <span class="page-number">13</span>
   </article>
 
   <article class="book-page" data-page="14" data-thumb="assets/page-team.png?v=2">
-    <img class="page-bg" src="assets/page-team.png?v=2" alt="The Heart Squad assembles">
+    <img class="page-bg" src="assets/page-team.png?v=2" alt="">
     <div class="page-overlay bottom">
-      <div class="page-text">
-        <p>Nick didn't go alone. His friends arrived—<span class="emphasis">Bolt Ben</span>, <span class="emphasis">Star Sasha</span>, and <span class="emphasis">Captain Kindness Kit</span>—each wearing a cape of a different color. Together, they were the Heart Squad!</p>
-      </div>
+      <div class="page-text"><p data-i18n="p14"></p></div>
     </div>
     <span class="page-number">14</span>
   </article>
 
   <article class="book-page" data-page="15" data-thumb="assets/page-15-heart-squad-help.png?v=2">
-    <img class="page-bg" src="assets/page-15-heart-squad-help.png?v=2" alt="The Heart Squad helps Grumble mend his cape">
+    <img class="page-bg" src="assets/page-15-heart-squad-help.png?v=2" alt="">
     <div class="page-overlay bottom">
-      <div class="page-text">
-        <p>The Heart Squad didn't punch or zap. They shared toys, told jokes, and helped Grumble's torn cape. Slowly, his purple frown turned pink. "Nobody ever helped <span class="emphasis">me</span> before," he whispered.</p>
-      </div>
+      <div class="page-text"><p data-i18n="p15"></p></div>
     </div>
     <span class="page-number">15</span>
   </article>
 
   <article class="book-page" data-page="16" data-thumb="assets/page-16-grumblesmith.png?v=2">
-    <img class="page-bg" src="assets/page-16-grumblesmith.png?v=2" alt="Grumblesmith the Fix-It Hero mends a bicycle">
+    <img class="page-bg" src="assets/page-16-grumblesmith.png?v=2" alt="">
     <div class="page-overlay bottom">
-      <div class="page-text">
-        <p>Grumble became <span class="emphasis">Grumblesmith</span>, the Fix-It Hero! He mended bikes and built birdhouses. Nick smiled. The best superheroes don't defeat people—they <span class="emphasis">lift them up</span>.</p>
-      </div>
+      <div class="page-text"><p data-i18n="p16"></p></div>
     </div>
     <span class="page-number">16</span>
   </article>
 
   <article class="book-page" data-page="17" data-thumb="assets/page-17-the-end.png?v=2">
-    <img class="page-bg" src="assets/page-17-the-end.png?v=2" alt="Nick hangs up his cape at sunset">
+    <img class="page-bg" src="assets/page-17-the-end.png?v=2" alt="">
     <div class="page-overlay center">
       <div class="page-text end-block">
-        <h2>The End</h2>
-        <p>Nick hung up his cape each night, knowing his greatest superpower was always inside him: a kind and brave heart.</p>
+        <h2 data-i18n="p17_title">The End</h2>
+        <p data-i18n="p17_body"></p>
         <div class="end-stars">⭐ 💛 ⭐</div>
-        <p style="margin-top:0.9rem;font-size:0.95rem;opacity:0.9;">You have it too.</p>
+        <p style="margin-top:0.9rem;font-size:0.95rem;opacity:0.9;" data-i18n="p17_tagline"></p>
       </div>
     </div>
     <span class="page-number">17</span>
@@ -506,22 +596,128 @@
 </main>
 
 <nav class="nav-bar">
-  <button class="btn-prev" id="btnPrev" disabled>← Prev</button>
+  <button class="btn-prev" id="btnPrev" disabled data-i18n="nav_prev">← Prev</button>
   <div class="page-dots" id="pageDots"></div>
-  <button class="btn-grid" id="btnGrid">Pages</button>
-  <button class="btn-next" id="btnNext">Next →</button>
+  <button class="btn-grid" id="btnGrid" data-i18n="nav_pages">Pages</button>
+  <button class="btn-next" id="btnNext" data-i18n="nav_next">Next →</button>
 </nav>
 
 <div class="thumb-panel" id="thumbPanel">
-  <button class="thumb-close" id="btnCloseGrid">Close</button>
+  <button class="thumb-close" id="btnCloseGrid" data-i18n="nav_close">Close</button>
   <div class="thumb-grid" id="thumbGrid"></div>
 </div>
 
 <script>
-  const pages = document.querySelectorAll('.book-page');
-  const total = pages.length;
-  let current = 1;
+  const I18N = {
+    en: {
+      docTitle: 'Nick and the Kindness Cape — Preview',
+      headerTitle: '📖 Book Preview',
+      headerSubtitle: 'Nick and the Kindness Cape · 17 pages · Ages 4–8',
+      changeLang: '🌐 Language',
+      pageCounter: (n, t) => `Page ${n} of ${t}`,
+      nav_prev: '← Prev',
+      nav_next: 'Next →',
+      nav_pages: 'Pages',
+      nav_close: 'Close',
+      p1_title: 'Nick and the<br>Kindness Cape',
+      p1_subtitle: 'A Superhero Story About Heart',
+      p1_byline: 'Preview Edition',
+      p2: 'In the sunny town of <span class="emphasis">Bright Hollow</span>, lived an ordinary boy named Nick. He rode his red bike, fed the pigeons, and dreamed of doing something <span class="emphasis">extraordinary</span>.',
+      p3: 'One rainy afternoon, Nick explored the dusty attic. Behind an old trunk, something <span class="emphasis">glimmered</span>—a golden cape with a star that seemed to wink at him.',
+      p4: 'Nick tied the cape around his shoulders. The star glowed warm and bright. The floor dropped away and—<span class="emphasis">WHOOSH!</span>—he lifted off like a balloon set free.',
+      p5: '"I\'m flying!" Nick cheered—until he bonked into an oak tree. Leaves rained down. A squirrel shook its fist. Being a superhero, Nick learned, takes <span class="emphasis">practice</span>.',
+      p6: 'A kind old hero appeared—<span class="emphasis">Captain Compass</span>, retired but wise. "Every great hero stumbles," he smiled. "The cape chose you because of what\'s in your heart, not your height."',
+      p7: 'Captain Compass taught Nick to hover, swoop, and land softly. "Real power," he said, "isn\'t about being the strongest. It\'s about being the <span class="emphasis">bravest helper</span> you can be."',
+      p8: 'That evening, the Hero Beacon blazed red over Bright Hollow. <span class="emphasis">Someone needs help!</span> Nick\'s cape fluttered. This was his moment. His very first real mission.',
+      p9: 'At Maple Park, Mrs. Patel pointed up at a tree. "My kitten, Whiskers, is stuck!" Whiskers mewed sadly from the highest branch. Nick rolled up his sleeves—or rather, his cape.',
+      p10: 'Nick flew up and tried to <span class="emphasis">grab</span> the kitten. Whiskers scrambled higher. Nick tried a super-loud shout. Whiskers hid behind a leaf. Nothing worked!',
+      p11: 'Nick took a deep breath. He spoke softly: "It\'s okay, little one. I\'m here to help, not hurry you." He held out his hand and waited, patient as sunshine.',
+      p12: 'Whiskers sniffed, stepped forward, and curled into Nick\'s arms. Mrs. Patel cheered. Nick had saved the day—not with force, but with <span class="emphasis">gentleness</span>. His star glowed brighter than ever.',
+      p13: 'But across town, a shadow grumbled. <span class="emphasis">Grumpy Grumble</span> fed on frowns and fussing. "Joy belongs to ME!" he bellowed, stealing smiles from the playground.',
+      p14: 'Nick didn\'t go alone. His friends arrived—<span class="emphasis">Bolt Ben</span>, <span class="emphasis">Star Sasha</span>, and <span class="emphasis">Captain Kindness Kit</span>—each wearing a cape of a different color. Together, they were the Heart Squad!',
+      p15: 'The Heart Squad didn\'t punch or zap. They shared toys, told jokes, and helped Grumble\'s torn cape. Slowly, his purple frown turned pink. "Nobody ever helped <span class="emphasis">me</span> before," he whispered.',
+      p16: 'Grumble became <span class="emphasis">Grumblesmith</span>, the Fix-It Hero! He mended bikes and built birdhouses. Nick smiled. The best superheroes don\'t defeat people—they <span class="emphasis">lift them up</span>.',
+      p17_title: 'The End',
+      p17_body: 'Nick hung up his cape each night, knowing his greatest superpower was always inside him: a kind and brave heart.',
+      p17_tagline: 'You have it too.',
+      alts: {
+        1: 'Nick flying over Bright Hollow in his golden kindness cape',
+        2: 'Nick riding his bike through Bright Hollow',
+        3: 'Nick discovers a glowing golden cape in the attic',
+        4: 'Nick lifts off wearing the glowing cape',
+        5: 'Nick bonks into an oak tree while learning to fly',
+        6: 'Captain Compass speaks with Nick in the park',
+        7: 'Nick trains with Captain Compass',
+        8: 'The Hero Beacon blazes over Bright Hollow',
+        9: 'Mrs. Patel points to Whiskers stuck in a tree',
+        10: 'Nick tries to reach Whiskers in the tree',
+        11: 'Nick speaks gently to Whiskers',
+        12: 'Nick holds Whiskers safely while Mrs. Patel cheers',
+        13: 'Grumpy Grumble at the playground',
+        14: 'The Heart Squad assembles',
+        15: 'The Heart Squad helps Grumble mend his cape',
+        16: 'Grumblesmith the Fix-It Hero mends a bicycle',
+        17: 'Nick hangs up his cape at sunset'
+      }
+    },
+    es: {
+      docTitle: 'Nick y la Capa de la Bondad — Vista previa',
+      headerTitle: '📖 Vista previa del libro',
+      headerSubtitle: 'Nick y la Capa de la Bondad · 17 páginas · Edades 4–8',
+      changeLang: '🌐 Idioma',
+      pageCounter: (n, t) => `Página ${n} de ${t}`,
+      nav_prev: '← Ant.',
+      nav_next: 'Sig. →',
+      nav_pages: 'Páginas',
+      nav_close: 'Cerrar',
+      p1_title: 'Nick y la<br>Capa de la Bondad',
+      p1_subtitle: 'Un cuento de superhéroes sobre el corazón',
+      p1_byline: 'Edición de vista previa',
+      p2: 'En el soleado pueblo de <span class="emphasis">Valle Brillante</span>, vivía un niño común llamado Nick. Montaba su bicicleta roja, alimentaba a las palomas y soñaba con hacer algo <span class="emphasis">extraordinario</span>.',
+      p3: 'Una tarde lluviosa, Nick exploró el ático polvoriento. Detrás de un viejo baúl, algo <span class="emphasis">brilló</span>: una capa dorada con una estrella que parecía guiñarle.',
+      p4: 'Nick ató la capa a sus hombros. La estrella brilló cálida y fuerte. El suelo desapareció y—<span class="emphasis">¡ZUMBA!</span>—se elevó como un globo suelto.',
+      p5: '"¡Estoy volando!" gritó Nick—hasta que chocó contra un roble. Cayeron hojas. Una ardilla movió el puño. Ser superhéroe, aprendió Nick, requiere <span class="emphasis">práctica</span>.',
+      p6: 'Apareció un héroe anciano y amable: el <span class="emphasis">Capitán Brújula</span>, retirado pero sabio. "Todo gran héroe tropieza," sonrió. "La capa te eligió por lo que hay en tu corazón, no por tu estatura."',
+      p7: 'El Capitán Brújula enseñó a Nick a flotar, surcar y aterrizar suavemente. "El verdadero poder," dijo, "no es ser el más fuerte. Es ser el <span class="emphasis">ayudante más valiente</span> que puedas ser."',
+      p8: 'Esa noche, la Baliza del Héroe ardió roja sobre Valle Brillante. <span class="emphasis">¡Alguien necesita ayuda!</span> La capa de Nick ondeó. Este era su momento. Su primera misión de verdad.',
+      p9: 'En el Parque Arce, la señora Patel señaló un árbol. "¡Mi gatito, Whiskers, está atrapado!" Whiskers maulló tristemente desde la rama más alta. Nick se arremangó—bueno, se ajustó la capa.',
+      p10: 'Nick voló e intentó <span class="emphasis">agarrar</span> al gatito. Whiskers trepó más alto. Nick intentó un grito súper fuerte. Whiskers se escondió tras una hoja. ¡Nada funcionó!',
+      p11: 'Nick respiró hondo. Habló suavemente: "Está bien, pequeñito. Estoy aquí para ayudarte, no para apurarte." Extendió la mano y esperó, paciente como el sol.',
+      p12: 'Whiskers olfateó, dio un paso adelante y se acurrucó en los brazos de Nick. La señora Patel aplaudió. Nick había salvado el día—no con fuerza, sino con <span class="emphasis">gentileza</span>. Su estrella brilló más que nunca.',
+      p13: 'Pero al otro lado del pueblo, una sombra gruñó. <span class="emphasis">Gruñón Quejón</span> se alimentaba de frunces y quejas. "¡La alegría me pertenece a MÍ!" rugió, robando sonrisas del parque.',
+      p14: 'Nick no fue solo. Llegaron sus amigos—<span class="emphasis">Ben Rayo</span>, <span class="emphasis">Sasha Estrella</span> y el <span class="emphasis">Capitán Bondad Kit</span>—cada uno con una capa de diferente color. ¡Juntos eran el Escuadrón Corazón!',
+      p15: 'El Escuadrón Corazón no golpeó ni zapateó. Compartieron juguetes, contaron chistes y ayudaron a remendar la capa rota de Quejón. Poco a poco, su ceño púrpura se volvió rosa. "Nadie me ayudó <span class="emphasis">a mí</span> antes," susurró.',
+      p16: 'Quejón se convirtió en <span class="emphasis">Herrero Quejón</span>, ¡el Héroe Reparador! Arreglaba bicicletas y construía casitas para pájaros. Nick sonrió. Los mejores superhéroes no derrotan a las personas—las <span class="emphasis">levantan</span>.',
+      p17_title: 'Fin',
+      p17_body: 'Nick colgaba su capa cada noche, sabiendo que su mayor superpoder siempre estuvo dentro de él: un corazón amable y valiente.',
+      p17_tagline: 'Tú también lo tienes.',
+      alts: {
+        1: 'Nick volando sobre Valle Brillante con su capa dorada de la bondad',
+        2: 'Nick monta su bicicleta por Valle Brillante',
+        3: 'Nick descubre una capa dorada brillante en el ático',
+        4: 'Nick se eleva usando la capa brillante',
+        5: 'Nick choca contra un roble mientras aprende a volar',
+        6: 'El Capitán Brújula habla con Nick en el parque',
+        7: 'Nick entrena con el Capitán Brújula',
+        8: 'La Baliza del Héroe arde sobre Valle Brillante',
+        9: 'La señora Patel señala a Whiskers atrapado en un árbol',
+        10: 'Nick intenta alcanzar a Whiskers en el árbol',
+        11: 'Nick habla suavemente con Whiskers',
+        12: 'Nick sostiene a Whiskers mientras la señora Patel aplaude',
+        13: 'Gruñón Quejón en el parque',
+        14: 'El Escuadrón Corazón se reúne',
+        15: 'El Escuadrón Corazón ayuda a remendar la capa de Quejón',
+        16: 'Herrero Quejón el Héroe Reparador arregla una bicicleta',
+        17: 'Nick cuelga su capa al atardecer'
+      }
+    }
+  };
 
+  let lang = null;
+  let current = 1;
+  const total = 17;
+
+  const pages = document.querySelectorAll('.book-page');
   const counter = document.getElementById('pageCounter');
   const btnPrev = document.getElementById('btnPrev');
   const btnNext = document.getElementById('btnNext');
@@ -530,6 +726,52 @@
   const thumbPanel = document.getElementById('thumbPanel');
   const thumbGrid = document.getElementById('thumbGrid');
   const dotsContainer = document.getElementById('pageDots');
+  const langGate = document.getElementById('langGate');
+
+  function applyLanguage(code) {
+    lang = code;
+    const t = I18N[code];
+    document.documentElement.lang = code;
+    document.title = t.docTitle;
+    document.getElementById('headerTitle').textContent = t.headerTitle;
+    document.getElementById('headerSubtitle').textContent = t.headerSubtitle;
+    document.getElementById('btnChangeLang').textContent = t.changeLang;
+
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      const key = el.dataset.i18n;
+      if (t[key] !== undefined) {
+        if (key.startsWith('nav_')) el.textContent = t[key];
+        else el.innerHTML = t[key];
+      }
+    });
+
+    pages.forEach(page => {
+      const n = +page.dataset.page;
+      const img = page.querySelector('.page-bg');
+      if (img && t.alts[n]) img.alt = t.alts[n];
+    });
+
+    updatePageCounter();
+  }
+
+  function updatePageCounter() {
+    counter.textContent = I18N[lang].pageCounter(current, total);
+  }
+
+  function selectLanguage(code) {
+    applyLanguage(code);
+    langGate.classList.add('hidden');
+    document.body.classList.remove('lang-pending');
+  }
+
+  function showLanguageGate() {
+    langGate.classList.remove('hidden');
+    document.body.classList.add('lang-pending');
+  }
+
+  document.getElementById('btnLangEn').addEventListener('click', () => selectLanguage('en'));
+  document.getElementById('btnLangEs').addEventListener('click', () => selectLanguage('es'));
+  document.getElementById('btnChangeLang').addEventListener('click', showLanguageGate);
 
   pages.forEach(page => {
     const n = +page.dataset.page;
@@ -538,14 +780,13 @@
     const dot = document.createElement('span');
     dot.className = 'dot' + (n === 1 ? ' active' : '');
     dot.dataset.page = n;
-    dot.title = 'Page ' + n;
     dot.addEventListener('click', () => goTo(n));
     dotsContainer.appendChild(dot);
 
     const thumb = document.createElement('div');
     thumb.className = 'thumb' + (n === 1 ? ' current' : '');
     thumb.dataset.page = n;
-    thumb.innerHTML = '<img src="' + thumbSrc + '" alt="Page ' + n + '"><span>' + n + '</span>';
+    thumb.innerHTML = '<img src="' + thumbSrc + '" alt=""><span>' + n + '</span>';
     thumb.addEventListener('click', () => { goTo(n); thumbPanel.classList.remove('open'); });
     thumbGrid.appendChild(thumb);
   });
@@ -555,7 +796,7 @@
     pages.forEach(p => p.classList.toggle('active', +p.dataset.page === current));
     document.querySelectorAll('.dot').forEach(d => d.classList.toggle('active', +d.dataset.page === current));
     document.querySelectorAll('.thumb').forEach(t => t.classList.toggle('current', +t.dataset.page === current));
-    counter.textContent = 'Page ' + current + ' of ' + total;
+    if (lang) updatePageCounter();
     btnPrev.disabled = current === 1;
     btnNext.disabled = current === total;
   }
@@ -567,6 +808,7 @@
   thumbPanel.addEventListener('click', e => { if (e.target === thumbPanel) thumbPanel.classList.remove('open'); });
 
   document.addEventListener('keydown', e => {
+    if (langGate.classList.contains('hidden') === false) return;
     if (e.key === 'ArrowRight' || e.key === 'ArrowDown') goTo(current + 1);
     if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') goTo(current - 1);
     if (e.key === 'Escape') thumbPanel.classList.remove('open');
@@ -575,6 +817,7 @@
   let touchStartX = 0;
   document.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; }, { passive: true });
   document.addEventListener('touchend', e => {
+    if (langGate.classList.contains('hidden') === false) return;
     const diff = e.changedTouches[0].screenX - touchStartX;
     if (Math.abs(diff) > 50) goTo(current + (diff < 0 ? 1 : -1));
   }, { passive: true });
